@@ -120,8 +120,7 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
       )
       ..hasAssetsToDisplay = true
       ..totalAssetsCount = 1;
-    final picker = AssetPicker<AssetEntity, AssetPathEntity,
-        DefaultAssetPickerBuilderDelegate>(
+    final Widget picker = AssetPicker<AssetEntity, AssetPathEntity>(
       key: key,
       permissionRequestOption: permissionRequestOption,
       builder: DefaultAssetPickerBuilderDelegate(
@@ -132,7 +131,8 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
         gridThumbnailSize: pickerConfig.gridThumbnailSize,
         previewThumbnailSize: pickerConfig.previewThumbnailSize,
         specialPickerType: pickerConfig.specialPickerType,
-        specialItems: pickerConfig.specialItems,
+        specialItemPosition: pickerConfig.specialItemPosition,
+        specialItemBuilder: pickerConfig.specialItemBuilder,
         loadingIndicatorBuilder: pickerConfig.loadingIndicatorBuilder,
         selectPredicate: pickerConfig.selectPredicate,
         shouldRevertGrid: pickerConfig.shouldRevertGrid,
@@ -159,7 +159,7 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
   }
 }
 
-final AssetEntity testAssetEntity = AssetEntity(
+const AssetEntity testAssetEntity = AssetEntity(
   id: 'test',
   typeInt: 0,
   width: 0,
