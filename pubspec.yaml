@@ -22,11 +22,17 @@ dependencies:
   flutter:
     sdk: flutter
 
-  wechat_picker_library: ^1.0.7
+  wechat_picker_library: 
+    git:
+      url: https://github.com/Blueeit/wechat_picker_library.git
+      ref: main
 
   extended_image: '>=8.3.0 <11.0.0'
   meta: ^1.12.0
-  photo_manager: ^3.5.0
+  photo_manager:  
+    git:
+      url: https://github.com/Blueeit/photo_manager.git
+      ref: main
   photo_manager_image_provider: ^2.2.0
   provider: ^6.0.5
   video_player: ^2.7.0
