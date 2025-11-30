@@ -2,11 +2,11 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
-import 'dart:async' show Completer;
-import 'dart:io' as io show Platform;
+import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart' hide Path;
-import 'package:flutter/services.dart' show MethodCall;
+import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:wechat_picker_library/wechat_picker_library.dart';
 
@@ -18,9 +18,7 @@ import 'asset_picker_page_route.dart';
 
 AssetPickerDelegate _pickerDelegate = const AssetPickerDelegate();
 
-class AssetPicker<Asset, Path,
-        Delegate extends AssetPickerBuilderDelegate<Asset, Path>>
-    extends StatefulWidget {
+class AssetPicker<Asset, Path> extends StatefulWidget {
   const AssetPicker({
     super.key,
     required this.permissionRequestOption,
@@ -28,7 +26,7 @@ class AssetPicker<Asset, Path,
   });
 
   final PermissionRequestOption permissionRequestOption;
-  final Delegate builder;
+  final AssetPickerBuilderDelegate<Asset, Path> builder;
 
   /// Provide another [AssetPickerDelegate] which override with
   /// custom methods during handling the picking,
@@ -70,13 +68,10 @@ class AssetPicker<Asset, Path,
   }
 
   /// {@macro wechat_assets_picker.delegates.AssetPickerDelegate.pickAssetsWithDelegate}
-  static Future<List<Asset>?> pickAssetsWithDelegate<
-      Asset,
-      Path,
-      PickerProvider extends AssetPickerProvider<Asset, Path>,
-      Delegate extends AssetPickerBuilderDelegate<Asset, Path>>(
+  static Future<List<Asset>?> pickAssetsWithDelegate<Asset, Path,
+      PickerProvider extends AssetPickerProvider<Asset, Path>>(
     BuildContext context, {
-    required Delegate delegate,
+    required AssetPickerBuilderDelegate<Asset, Path> delegate,
     PermissionRequestOption permissionRequestOption =
         const PermissionRequestOption(),
     Key? key,
@@ -84,8 +79,7 @@ class AssetPicker<Asset, Path,
     AssetPickerPageRouteBuilder<List<Asset>>? pageRouteBuilder,
     bool useRootNavigator = true,
   }) {
-    return _pickerDelegate
-        .pickAssetsWithDelegate<Asset, Path, PickerProvider, Delegate>(
+    return _pickerDelegate.pickAssetsWithDelegate<Asset, Path, PickerProvider>(
       context,
       key: key,
       delegate: delegate,
@@ -112,13 +106,11 @@ class AssetPicker<Asset, Path,
   }
 
   @override
-  AssetPickerState<Asset, Path, Delegate> createState() =>
-      AssetPickerState<Asset, Path, Delegate>();
+  AssetPickerState<Asset, Path> createState() =>
+      AssetPickerState<Asset, Path>();
 }
 
-class AssetPickerState<Asset, Path,
-        Delegate extends AssetPickerBuilderDelegate<Asset, Path>>
-    extends State<AssetPicker<Asset, Path, Delegate>>
+class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   Completer<PermissionState>? permissionStateLock;
 
@@ -139,7 +131,7 @@ class AssetPickerState<Asset, Path,
           return;
         }
         widget.builder.permissionNotifier.value = ps;
-        if (ps == PermissionState.limited && io.Platform.isAndroid) {
+        if (ps == PermissionState.limited && Platform.isAndroid) {
           _onAssetsUpdated(const MethodCall(''));
         }
       });

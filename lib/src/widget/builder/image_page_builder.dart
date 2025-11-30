@@ -16,7 +16,6 @@ import 'package:wechat_picker_library/wechat_picker_library.dart';
 import '../../constants/constants.dart';
 import '../../delegates/asset_picker_text_delegate.dart';
 import '../../delegates/asset_picker_viewer_builder_delegate.dart';
-import '../../provider/asset_picker_viewer_provider.dart';
 
 class ImagePageBuilder extends StatefulWidget {
   const ImagePageBuilder({
@@ -25,24 +24,19 @@ class ImagePageBuilder extends StatefulWidget {
     required this.delegate,
     this.previewThumbnailSize,
     this.shouldAutoplayPreview = false,
-    this.enableLivePhoto = true,
   });
 
   /// Asset currently displayed.
   /// 展示的资源
   final AssetEntity asset;
 
-  final AssetPickerViewerBuilderDelegate<AssetEntity, AssetPathEntity,
-      AssetPickerViewerProvider<AssetEntity>> delegate;
+  final AssetPickerViewerBuilderDelegate<AssetEntity, AssetPathEntity> delegate;
 
   final ThumbnailSize? previewThumbnailSize;
 
   /// Whether the preview should auto play.
   /// 预览是否自动播放
   final bool shouldAutoplayPreview;
-
-  /// {@macro wechat_assets_picker.constants.AssetPickerConfig.enableLivePhoto}
-  final bool enableLivePhoto;
 
   @override
   State<ImagePageBuilder> createState() => _ImagePageBuilderState();
@@ -54,10 +48,7 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
 
   bool get _isOriginal => widget.previewThumbnailSize == null;
 
-  /// Whether the asset should be treated as a Live Photo.
-  /// Checks both the global enableLivePhoto flag and the asset's isLivePhoto
-  /// property to determine if Live Photo functionality should be active.
-  bool get _isLivePhoto => widget.enableLivePhoto && widget.asset.isLivePhoto;
+  bool get _isLivePhoto => widget.asset.isLivePhoto;
 
   @override
   void didUpdateWidget(ImagePageBuilder oldWidget) {
@@ -127,7 +118,6 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
         );
         if (_isLivePhoto && _livePhotoVideoController != null) {
           return _LivePhotoWidget(
-            asset: asset,
             controller: _livePhotoVideoController!,
             fit: BoxFit.contain,
             state: state,
@@ -169,14 +159,12 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
 
 class _LivePhotoWidget extends StatefulWidget {
   const _LivePhotoWidget({
-    required this.asset,
     required this.controller,
     required this.state,
     required this.fit,
     required this.textDelegate,
   });
 
-  final AssetEntity asset;
   final VideoPlayerController controller;
   final ExtendedImageState state;
   final BoxFit fit;

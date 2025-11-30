@@ -12,7 +12,6 @@ import 'package:wechat_picker_library/wechat_picker_library.dart';
 import '../../constants/constants.dart';
 import '../../delegates/asset_picker_viewer_builder_delegate.dart';
 import '../../internals/singleton.dart';
-import '../../provider/asset_picker_viewer_provider.dart';
 
 class VideoPageBuilder extends StatefulWidget {
   const VideoPageBuilder({
@@ -27,8 +26,7 @@ class VideoPageBuilder extends StatefulWidget {
   /// 展示的资源
   final AssetEntity asset;
 
-  final AssetPickerViewerBuilderDelegate<AssetEntity, AssetPathEntity,
-      AssetPickerViewerProvider<AssetEntity>> delegate;
+  final AssetPickerViewerBuilderDelegate<AssetEntity, AssetPathEntity> delegate;
 
   /// Only previewing one video and with the [SpecialPickerType.wechatMoment].
   /// 是否处于 [SpecialPickerType.wechatMoment] 且只有一个视频

@@ -16,40 +16,35 @@ import '../provider/asset_picker_viewer_provider.dart';
 import 'asset_picker.dart';
 import 'asset_picker_page_route.dart';
 
-class AssetPickerViewer<
-    Asset,
-    Path,
-    Provider extends AssetPickerViewerProvider<Asset>,
-    Delegate extends AssetPickerViewerBuilderDelegate<Asset, Path,
-        Provider>> extends StatefulWidget {
+class AssetPickerViewer<Asset, Path> extends StatefulWidget {
   const AssetPickerViewer({
     super.key,
     required this.builder,
   });
 
-  final Delegate builder;
+  final AssetPickerViewerBuilderDelegate<Asset, Path> builder;
 
   @override
-  AssetPickerViewerState<Asset, Path, Provider, Delegate> createState() =>
-      AssetPickerViewerState<Asset, Path, Provider, Delegate>();
+  AssetPickerViewerState<Asset, Path> createState() =>
+      AssetPickerViewerState<Asset, Path>();
 
   /// Static method to push with the navigator.
   /// 跳转至选择预览的静态方法
-  static Future<List<AssetEntity>?>
-      pushToViewer<P extends DefaultAssetPickerProvider>(
+  static Future<List<AssetEntity>?> pushToViewer(
     BuildContext context, {
     int currentIndex = 0,
     required List<AssetEntity> previewAssets,
     required ThemeData themeData,
-    P? selectorProvider,
+    DefaultAssetPickerProvider? selectorProvider,
     ThumbnailSize? previewThumbnailSize,
     List<AssetEntity>? selectedAssets,
     SpecialPickerType? specialPickerType,
     int? maxAssets,
     bool shouldReversePreview = false,
     AssetSelectPredicate<AssetEntity>? selectPredicate,
+    PermissionRequestOption permissionRequestOption =
+        const PermissionRequestOption(),
     bool shouldAutoplayPreview = false,
-    bool enableLivePhoto = true,
     bool useRootNavigator = false,
     RouteSettings? pageRouteSettings,
     AssetPickerViewerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
@@ -57,13 +52,9 @@ class AssetPickerViewer<
     if (previewAssets.isEmpty) {
       throw StateError('Previewing empty assets is not allowed.');
     }
-    final viewer = AssetPickerViewer<
-        AssetEntity,
-        AssetPathEntity,
-        AssetPickerViewerProvider<AssetEntity>,
-        DefaultAssetPickerViewerBuilderDelegate>(
-      builder: DefaultAssetPickerViewerBuilderDelegate<
-          AssetPickerViewerProvider<AssetEntity>, P>(
+    await AssetPicker.permissionCheck(requestOption: permissionRequestOption);
+    final Widget viewer = AssetPickerViewer<AssetEntity, AssetPathEntity>(
+      builder: DefaultAssetPickerViewerBuilderDelegate(
         currentIndex: currentIndex,
         previewAssets: previewAssets,
         provider: selectedAssets != null
@@ -83,10 +74,9 @@ class AssetPickerViewer<
         shouldReversePreview: shouldReversePreview,
         selectPredicate: selectPredicate,
         shouldAutoplayPreview: shouldAutoplayPreview,
-        enableLivePhoto: enableLivePhoto,
       ),
     );
-    final result = await Navigator.maybeOf(
+    final List<AssetEntity>? result = await Navigator.maybeOf(
       context,
       rootNavigator: useRootNavigator,
     )?.push<List<AssetEntity>>(
@@ -98,51 +88,41 @@ class AssetPickerViewer<
 
   /// Call the viewer with provided delegate and provider.
   /// 通过指定的 [delegate] 调用查看器
-  static Future<List<Asset>?> pushToViewerWithDelegate<
-      Asset,
-      Path,
-      Provider extends AssetPickerViewerProvider<Asset>,
-      Delegate extends AssetPickerViewerBuilderDelegate<Asset, Path, Provider>>(
+  static Future<List<A>?> pushToViewerWithDelegate<A, P>(
     BuildContext context, {
-    required Delegate delegate,
+    required AssetPickerViewerBuilderDelegate<A, P> delegate,
     PermissionRequestOption permissionRequestOption =
         const PermissionRequestOption(),
     bool useRootNavigator = false,
     RouteSettings? pageRouteSettings,
-    AssetPickerViewerPageRouteBuilder<List<Asset>>? pageRouteBuilder,
+    AssetPickerViewerPageRouteBuilder<List<A>>? pageRouteBuilder,
   }) async {
     await AssetPicker.permissionCheck(requestOption: permissionRequestOption);
-    final viewer = AssetPickerViewer<Asset, Path, Provider, Delegate>(
-      builder: delegate,
+    final Widget viewer = AssetPickerViewer<A, P>(builder: delegate);
+    final List<A>? result = await Navigator.maybeOf(
+      context,
+      rootNavigator: useRootNavigator,
+    )?.push<List<A>>(
+      pageRouteBuilder?.call(viewer) ??
+          AssetPickerViewerPageRoute(builder: (context) => viewer),
     );
-    final pageRoute = pageRouteBuilder?.call(viewer) ??
-        AssetPickerViewerPageRoute(builder: (context) => viewer);
-    final result =
-        await Navigator.maybeOf(context)?.push<List<Asset>>(pageRoute);
     return result;
   }
 }
 
-class AssetPickerViewerState<
-        Asset,
-        Path,
-        Provider extends AssetPickerViewerProvider<Asset>,
-        Delegate extends AssetPickerViewerBuilderDelegate<Asset, Path,
-            Provider>>
-    extends State<AssetPickerViewer<Asset, Path, Provider, Delegate>>
+class AssetPickerViewerState<Asset, Path>
+    extends State<AssetPickerViewer<Asset, Path>>
     with TickerProviderStateMixin {
-  Delegate get builder => widget.builder;
+  AssetPickerViewerBuilderDelegate<Asset, Path> get builder => widget.builder;
 
   @override
   void initState() {
     super.initState();
-    builder.initState(this);
+    builder.initStateAndTicker(this, this);
   }
 
   @override
-  void didUpdateWidget(
-    covariant AssetPickerViewer<Asset, Path, Provider, Delegate> oldWidget,
-  ) {
+  void didUpdateWidget(covariant AssetPickerViewer<Asset, Path> oldWidget) {
     super.didUpdateWidget(oldWidget);
     builder.didUpdateViewer(this, oldWidget, widget);
   }

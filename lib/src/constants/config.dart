@@ -2,13 +2,12 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
-import 'package:flutter/material.dart' show Color, ThemeData;
+import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 import '../constants/typedefs.dart';
 import '../delegates/asset_picker_text_delegate.dart';
 import '../delegates/sort_path_delegate.dart';
-import '../models/special_item.dart';
 import 'constants.dart';
 import 'enums.dart';
 
@@ -30,7 +29,8 @@ class AssetPickerConfig {
     this.themeColor,
     this.pickerTheme,
     this.textDelegate,
-    this.specialItems = const [],
+    this.specialItemPosition = SpecialItemPosition.none,
+    this.specialItemBuilder,
     this.loadingIndicatorBuilder,
     this.selectPredicate,
     this.shouldRevertGrid,
@@ -40,7 +40,6 @@ class AssetPickerConfig {
     this.assetsChangeRefreshPredicate,
     this.shouldAutoplayPreview = false,
     this.dragToSelect,
-    this.enableLivePhoto = true,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'pickerTheme and themeColor cannot be set at the same time.',
@@ -57,6 +56,13 @@ class AssetPickerConfig {
               requestType == RequestType.common,
           'SpecialPickerType.wechatMoment and requestType '
           'cannot be set at the same time.',
+        ),
+        assert(
+          (specialItemBuilder == null &&
+                  identical(specialItemPosition, SpecialItemPosition.none)) ||
+              (specialItemBuilder != null &&
+                  !identical(specialItemPosition, SpecialItemPosition.none)),
+          'Custom item did not set properly.',
         );
 
   /// Selected assets.
@@ -162,9 +168,13 @@ class AssetPickerConfig {
 
   final AssetPickerTextDelegate? textDelegate;
 
-  /// List of special items.
-  /// 自定义 item 列表
-  final List<SpecialItem<AssetPathEntity>> specialItems;
+  /// Allow users set a special item in the picker with several positions.
+  /// 允许用户在选择器中添加一个自定义item，并指定位置
+  final SpecialItemPosition specialItemPosition;
+
+  /// The widget builder for the the special item.
+  /// 自定义item的构造方法
+  final SpecialItemBuilder<AssetPathEntity>? specialItemBuilder;
 
   /// Indicates the loading status for the builder.
   /// 指示目前加载的状态
@@ -208,14 +218,4 @@ class AssetPickerConfig {
   /// 当 `maxAssets` 为 `1` 时，该功能不可用。
   /// {@endtemplate}
   final bool? dragToSelect;
-
-  /// {@template wechat_assets_picker.constants.AssetPickerConfig.enableLivePhoto}
-  /// Whether to enable Live-Photo functionality in the picker.
-  /// 是否启用实况图片的功能
-  ///
-  /// When set to `false`, Live-Photo indicators and interactions will not be
-  /// displayed throughout the picker.
-  /// 当设置为 `false` 时，选择器中将不会显示实况图片相关的标识和交互。
-  /// {@endtemplate}
-  final bool enableLivePhoto;
 }
