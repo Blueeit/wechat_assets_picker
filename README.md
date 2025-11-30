@@ -36,13 +36,13 @@ See the [Migration Guide][] to learn how to migrate between breaking changes.
 The package only guarantees to be working on **the stable version of Flutter**.
 We won't update it in real-time to align with other channels of Flutter.
 
-|         | 3.10 | 3.13 | 3.16 | 3.22 | 3.27 |
-|---------|:----:|:----:|:----:|:----:|:----:|
-| 10.0.0+ |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |
-| 9.5.0+  |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |
-| 8.9.0+  |  ❌   |  ❌   |  ✅   |  ❌   |  ❌   |
-| 8.7.0+  |  ❌   |  ✅   |  ❌   |  ❌   |  ❌   |
-| 8.5.0+  |  ✅   |  ❌   |  ❌   |  ❌   |  ❌   |
+|        | 3.7 | 3.10 | 3.13 | 3.16 | 3.22 |
+|--------|:---:|:----:|:----:|:----:|:----:|
+| 9.5.0+ |  ❌  |  ❌   |  ❌   |  ❌   |  ✅   |
+| 8.9.0+ |  ❌  |  ❌   |  ❌   |  ✅   |  ❌   |
+| 8.7.0+ |  ❌  |  ❌   |  ✅   |  ❌   |  ❌   |
+| 8.5.0+ |  ❌  |  ✅   |  ❌   |  ❌   |  ❌   |
+| 8.4.0+ |  ✅  |  ❌   |  ❌   |  ❌   |  ❌   |
 
 If you got a `resolve conflict` error when running `flutter pub get`,
 please use `dependency_overrides` to fix it.
@@ -303,7 +303,8 @@ Fields in `AssetPickerConfig`:
 | themeColor                        | `Color?`                                         | Main theme color for the picker.                                                               | `Color(0xff00bc56)`         |
 | pickerTheme                       | `ThemeData?`                                     | Theme data provider for the picker and the viewer.                                             | `null`                      |
 | textDelegate                      | `AssetPickerTextDelegate?`                       | Text delegate for the picker, for customize the texts.                                         | `AssetPickerTextDelegate()` |
-| specialItems                      | `List<SpecialItem>`                              | List of special items.                                                                         | `const <SpecialItem>[]`     |
+| specialItemPosition               | `SpecialItemPosition`                            | Allow users set a special item in the picker with several positions.                           | `SpecialItemPosition.none`  |
+| specialItemBuilder                | `SpecialItemBuilder?`                            | The widget builder for the special item.                                                       | `null`                      |
 | loadingIndicatorBuilder           | `IndicatorBuilder?`                              | Indicates the loading status for the builder.                                                  | `null`                      |
 | selectPredicate                   | `AssetSelectPredicate`                           | Predicate whether an asset can be selected or unselected.                                      | `null`                      |
 | shouldRevertGrid                  | `bool?`                                          | Whether the assets grid should revert.                                                         | `null`                      |
@@ -313,7 +314,6 @@ Fields in `AssetPickerConfig`:
 | assetsChangeRefreshPredicate      | `AssetsChangeRefreshPredicate<AssetPathEntity>?` | Whether assets changing should call refresh with the given call and the current selected path. | `null`                      |
 | shouldAutoPlayPreview             | `bool`                                           | Whether the preview should auto play.                                                          | `false`                     |
 | dragToSelect                      | `bool`                                           | Whether assets selection can be done with drag gestures.                                       | `true`                      |
-| enableLivePhoto                   | `bool`                                           | Whether to enable Live-Photo functionality in the picker.                                      | `true`                      |
 
 - When `maxAssets` equals to `1` (a.k.a. single picking mode),
   use `SpecialPickerType.noPreview` will immediately select asset
@@ -589,7 +589,6 @@ Many thanks to these wonderful people ([emoji key](https://allcontributors.org/d
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/WeiJun0507"><img src="https://avatars.githubusercontent.com/u/66726409?v=4?s=50" width="50px;" alt="Wei Jun"/><br /><sub><b>Wei Jun</b></sub></a><br /><a href="#business-WeiJun0507" title="Business development">💼</a> <a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/commits?author=WeiJun0507" title="Code">💻</a> <a href="#ideas-WeiJun0507" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/yujune"><img src="https://avatars.githubusercontent.com/u/56582497?v=4?s=50" width="50px;" alt="JuNe"/><br /><sub><b>JuNe</b></sub></a><br /><a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/commits?author=yujune" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
