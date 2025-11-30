@@ -33,7 +33,10 @@ dependencies:
     git:
       url: https://github.com/Blueeit/photo_manager.git
       ref: main
-  photo_manager_image_provider: ^2.2.0
+  photo_manager_image_provider: 
+    git:
+      url: https://github.com/Blueeit/photo_manager_image_provider.git
+      ref: main
   provider: ^6.0.5
   video_player: ^2.7.0
   visibility_detector: ^0.4.0
